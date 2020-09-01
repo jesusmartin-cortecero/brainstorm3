@@ -571,6 +571,11 @@ function FigureMouseUpCallback(hFig, varargin)
     if isappdata(hFig, 'Timefreq') && ~isempty(getappdata(hFig, 'Timefreq'))
         bst_figures('SetCurrentFigure', hFig, 'TF');
     end
+    % Check if clicked object is still available
+    if ~isempty(clickObject) && ~ishandle(clickObject)
+        clickObject = [];
+        clickAction = [];
+    end
     
     % ===== SIMPLE CLICK ===== 
     % If user did not move the mouse since the click
@@ -1774,7 +1779,7 @@ function DisplayFigurePopup(hFig)
     
     % ==== MENU: TENSORS DISPLAY ====
     Handles = bst_figures('GetFigureHandles', hFig);
-    if ~isempty(Handles.TensorDisplay)
+    if isfield(Handles, 'TensorDisplay') && ~isempty(Handles.TensorDisplay)
         jMenuTensors = gui_component('Menu', jPopup, [], 'FEM tensors', IconLoader.ICON_FEM);
         % Display mode
         jItemEllipse = gui_component('radiomenuitem', jMenuTensors, [], 'Ellipses', [], [], @(h,ev)PlotTensorCut(hFig, [], [], [], [], 'ellipse'));
